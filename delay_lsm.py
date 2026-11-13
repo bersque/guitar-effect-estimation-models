@@ -7,17 +7,9 @@ import os
 from scipy.signal import correlate, correlation_lags
 from scipy.signal import correlate, correlation_lags, find_peaks
 from sympy import *
-from helping_functions import match_signal
+from helping_functions import *
 
-sample_rate, wav = wavfile.read("C:/Users/Kacper/Desktop/samples/looper_2.wav") ###zwraca wektor numpy-owy z probkami dzwieku  
-sample_rate1, wav1 = wavfile.read("C:/Users/Kacper/Desktop/samples/looper_2_d.wav") 
-
-wav = wav.astype(np.float64)
-wav1 = wav1.astype(np.float64)
-
-
-wav,wav1 = match_signal(wav,wav1,22)
-
+wav,wav1,sample_rate,sample_rate1 = create_samples("looper_2","looper_2_d")
 
 
 def delay(signal, sample_rate, delay_seconds, alpha): #delay to orginalny sygnal + orginalny sygnal opozniony i zmniejszony, model z jednym pogłosem 

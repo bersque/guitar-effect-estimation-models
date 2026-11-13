@@ -7,22 +7,15 @@ import os
 from scipy.signal import correlate, correlation_lags
 from scipy.signal import correlate, correlation_lags, find_peaks
 from sympy import *
-from helping_functions import MSLE,export,match_signal
+from helping_functions import *
 from delay_lsm import lsm_delay, delay, cascading_delay
+from stochastic_distortion import *
 
-print("Program started!\n")
+print("Program started!...")
 
+wav,wav1,sample_rate,sample_rate1 = create_samples("fsc","fsd")
 
-sample_rate, wav = wavfile.read("C:/Users/Kacper/Desktop/samples/looper_2.wav") ###zwraca wektor numpy-owy z probkami dzwieku  
-sample_rate1, wav1 = wavfile.read("C:/Users/Kacper/Desktop/samples/looper_2_d.wav") 
-
-wav = wav.astype(np.float64)
-wav1 = wav1.astype(np.float64)
-
-
-wav,wav1 = match_signal(wav,wav1,22)
-
-def main(s1,s2): ## s1 - probka, s2 - probka+delay
+def main_delay_lsm(s1,s2): ## s1 - probka, s2 - probka+delay
     coeff = lsm_delay(s1,s2)
     estimated_track = delay(s1,sample_rate,coeff[0],coeff[1])
     err = MSLE(s2,estimated_track)
@@ -30,4 +23,18 @@ def main(s1,s2): ## s1 - probka, s2 - probka+delay
     print(f"Błąd średniokwadratowy: {err}.\n") 
     export(estimated_track)
 
-main(wav,wav1)
+def main_dist_atan(s1,s2):
+    coeff = gradient_descent_stochastic_noa(gradient,5000,0.8,wav,wav1)
+    estimated_track=distort_atan(wav,coeff[0],coeff[1],wav,wav1)
+    err = MSLE(s2,estimated_track)
+    print(f"y = {coeff[0]}*arctan({coeff[1]}x)")
+    print(f"MSE: {err}")
+    export(estimated_track,wav,wav1)
+
+main_dist_atan(wav,wav1) ## ALLELUJA, nadal trzeba popracowac ale jest super
+
+
+
+
+
+

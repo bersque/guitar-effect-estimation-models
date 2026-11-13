@@ -1,19 +1,31 @@
 from scipy.io import wavfile
 import numpy as np
 
-sample_rate, wav = wavfile.read("C:/Users/Kacper/Desktop/samples/looper_2.wav") ###zwraca wektor numpy-owy z probkami dzwieku  
-sample_rate1, wav1 = wavfile.read("C:/Users/Kacper/Desktop/samples/looper_2_d.wav") 
+sample_rate, wav = wavfile.read("C:/Users/Kacper/Desktop/programowanie/guitar_effect_estimator/samples/looper_2.wav") ###zwraca wektor numpy-owy z probkami dzwieku  
+sample_rate1, wav1 = wavfile.read("C:/Users/Kacper/Desktop/programowanie/guitar_effect_estimator/samples/looper_2_d.wav") ###z efektrm, na gorze bez 
 
 wav = wav.astype(np.float64)
 wav1 = wav1.astype(np.float64)
+
+def create_samples(string_name1,string_name2):
+    sample_rate, wav = wavfile.read(f"C:/Users/Kacper/Desktop/programowanie/guitar_effect_estimator/samples/{string_name1}.wav") ###zwraca wektor numpy-owy z probkami dzwieku  
+    sample_rate1, wav1 = wavfile.read(f"C:/Users/Kacper/Desktop/programowanie/guitar_effect_estimator/samples/{string_name2}.wav") 
+
+    wav = wav.astype(np.float64)
+    wav1 = wav1.astype(np.float64)
+
+
+    wav,wav1 = match_signal(wav,wav1,22)
+
+    return(wav,wav1,sample_rate,sample_rate1)
 def export(signal,wav=wav,wav1=wav1):
     signal = np.clip(signal, -32768, 32767).astype(np.int16) ##tracimy odrobine informacji z konwersji na int ale tak malo ze pomijalne, inaczej wav sie nie kompiluje
     wav1 = np.clip(wav1, -32768, 32767).astype(np.int16)
     wav = np.clip(wav, -32768, 32767).astype(np.int16)
 
-    wavfile.write("C:/Users/Kacper/Desktop/programowanie/guitar_effect_estimator/estimated_effect.wav", sample_rate, signal)
-    wavfile.write("C:/Users/Kacper/Desktop/programowanie/guitar_effect_estimator/effect_original.wav", sample_rate, wav1)
-    wavfile.write("C:/Users/Kacper/Desktop/programowanie/guitar_effect_estimator/original.wav", sample_rate, wav)
+    wavfile.write("C:/Users/Kacper/Desktop/programowanie/guitar_effect_estimator/results/estimated_effect.wav", sample_rate, signal)
+    wavfile.write("C:/Users/Kacper/Desktop/programowanie/guitar_effect_estimator/results/effect_original.wav", sample_rate, wav1)
+    wavfile.write("C:/Users/Kacper/Desktop/programowanie/guitar_effect_estimator/results/original.wav", sample_rate, wav)
 
     print("File exported! :)")
 
