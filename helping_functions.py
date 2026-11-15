@@ -44,7 +44,7 @@ def match_signal(s1,s2,dlugosc, detection_treshold = 400): #sygnal zaczyna sie o
             break
     return(s1[start_s1:(start_s1+dlugosc)],s2[start_s2:(start_s2+dlugosc)]) ### zwraca 2 zsynchronizowane czasowo wektory 
 
-def MSLE(s1,s2):
+def MSLE(s1,s2): ##blad sredniokwadratowy
     s1 = np.asarray(s1, dtype=np.float64)
     s2 = np.asarray(s2, dtype=np.float64)
     n = len(s1)

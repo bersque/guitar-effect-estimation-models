@@ -85,7 +85,7 @@ def gradient_descent_stochastic_weighted(gradient_funkcja,iteracje,eta,proba_bez
         xobs = proba_z_efektem[losowy_indeks]
         xorg = proba_bez_efektu[losowy_indeks]
         wektor = wektor - eta*gradient_funkcja(wektor,xorg,xobs)
-        reszta_modelu = (xobs - wektor[0]*np.arctan(xorg*wektor[1]))**2 
+        reszta_modelu = (xobs - wektor[0]*np.arctan(xorg*wektor[1]))
         wartosc_funkcji = wektor[0]*np.arctan(xorg*wektor[1])
         print(wektor, reszta_modelu, wartosc_funkcji, i)
     wektor[0] = 32768 * wektor[0]
@@ -107,67 +107,19 @@ def gradient_descent_stochastic_noa(gradient_funkcja, iteracje, eta, proba_bez_e
     wagi = np.abs(proba_bez_efektu)
     prawdopodobienstwa = wagi / wagi.sum()
 
-    for i in range(0, iteracje):
-        losowy_indeks = np.random.choice(indeksy, size=1, replace=False,
-                                          p=prawdopodobienstwa)[0]  # <- wyciagamy skalar
-        xobs = proba_z_efektem[losowy_indeks]
-        xorg = proba_bez_efektu[losowy_indeks]
+    
+
+    losowe_indeksy = np.random.choice(indeksy,size=iteracje,replace=True,p=prawdopodobienstwa)
+
+    for i, j in enumerate(losowe_indeksy):
+        xobs = proba_z_efektem[j]
+        xorg = proba_bez_efektu[j]
 
         grad = gradient_funkcja(wektor, xorg, xobs)
-        wektor[1] = wektor[1] - eta * grad[1]   # <- aktualizujemy TYLKO k, a zamrozione
-
-        reszta_modelu = (xobs - wektor[0] * np.arctan(xorg * wektor[1])) ** 2
-        wartosc_funkcji = wektor[0] * np.arctan(xorg * wektor[1])
-        print(wektor, reszta_modelu, wartosc_funkcji, i)
+        wektor[1] -= eta * grad[1]
+        if i % 1000 == 0:
+            print(i, wektor)
 
     wektor[0] = 32768 * wektor[0]
     wektor[1] = wektor[1] / 32768
-    return wektor
-
-def gradient_descent_stochastic_weighted_batch(
-    gradient_funkcja,
-    iteracje,
-    eta,
-    proba_bez_efektu,
-    proba_z_efektem,
-    batch_size=1024,
-    wektor_startowy=[1, 2]
-):
-    wektor = np.array(wektor_startowy, dtype=float)
-
-    proba_bez_efektu = proba_bez_efektu / 32768
-    proba_z_efektem = proba_z_efektem / 32768
-
-    indeksy = np.arange(len(proba_bez_efektu))
-
-    wagi = np.abs(proba_bez_efektu)
-    prawdopodobienstwa = wagi / wagi.sum()
-
-    for i in range(iteracje):
-
-        losowe_indeksy = np.random.choice(
-            indeksy,
-            size=batch_size,
-            replace=False,
-            p=prawdopodobienstwa
-        )
-
-        gradienty = np.array([
-            gradient_funkcja(
-                wektor,
-                proba_bez_efektu[j],
-                proba_z_efektem[j]
-            )
-            for j in losowe_indeksy
-        ])
-
-        sredni_gradient = np.mean(gradienty, axis=0)
-
-        wektor -= eta * sredni_gradient
-
-        print("Parametry:", wektor, "Iteracja:", i)
-
-    wektor[0] *= 32768
-    wektor[1] /= 32768
-
     return wektor

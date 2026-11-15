@@ -1,9 +1,5 @@
-from scipy.io import wavfile
 import numpy as np
 import matplotlib.pyplot as plt
-from numpy.fft import fft, ifft
-import math
-import os
 from scipy.signal import correlate, correlation_lags
 from scipy.signal import correlate, correlation_lags, find_peaks
 from sympy import *
@@ -45,8 +41,6 @@ def cross_cor(x, y):
     best_lag = lags[best_idx]
 
     delay_sec = best_lag / sample_rate
-    # print(f"Best lag: {best_lag} samples")
-    # print(f"Best lag: {delay_sec} s")
     return(abs(best_lag))
 
 def lsm_delay(s1,s2,k=10000): ### s1 - sygnal orginalny, s2 - sygnal po delayu, zwracamy wspolczynniki do konstrukcji estymowanego delayu
@@ -67,6 +61,7 @@ def lsm_delay(s1,s2,k=10000): ### s1 - sygnal orginalny, s2 - sygnal po delayu, 
     print(f"delay: {d/sample_rate}s, alfa: {alfa}\n")
     return [d/sample_rate,alfa] #krotka - delay, alfa 
 
+####delay wielokrotny:
 
 def cascading_delay(s1,s2,treshhold,create=True):
     ####this version asumes equal delay periods between echoes but works!!
